@@ -133,6 +133,7 @@ GROUP BY "Customer Name", Segment, Region
 )
 
 
+
 SELECT
 RANK() OVER (ORDER BY total\_revenue DESC) AS revenue\_rank,
 "Customer Name",
@@ -148,7 +149,7 @@ LIMIT 15;
 
 ```
 
-\\---
+\\\\---
 
 
 
@@ -156,45 +157,57 @@ LIMIT 15;
 ===
 
 
-A 3-page interactive dashboard was built in \*\*Power BI Desktop\*\*.
+A 3-page interactive dashboard was built in \\\*\\\*Power BI Desktop\\\*\\\*.
 
 
 ### Page 1 — Executive Overview
 
-\* KPI Cards: Total Sales ($2.30M), Total Profit ($286K), Total Orders (5,009), Profit Margin % (12.47%)
-\* Monthly Sales Trend line chart (2014–2017 year comparison)
-\* Sales vs Profit by Category clustered bar chart
-\* Year and Region slicers
+\\\* KPI Cards: Total Sales ($2.30M), Total Profit ($286K), Total Orders (5,009), Profit Margin % (12.47%)
+\\\* Monthly Sales Trend line chart (2014–2017 year comparison)
+\\\* Sales vs Profit by Category clustered bar chart
+\\\* Year and Region slicers
 
 
-### Page 2 — Product \\\& Category Analysis
+### Page 2 — Product \\\\\\\& Category Analysis
 
-\* Sales \\\& Profit by Sub-Category clustered bar chart
-\* Top 10 Revenue-Generating Products
-\* Products with Negative Profit table (with conditional red formatting)
+\\\* Sales \\\\\\\& Profit by Sub-Category clustered bar chart
+\\\* Top 10 Revenue-Generating Products
+\\\* Products with Negative Profit table (with conditional red formatting)
 
 ### Page 3 — Regional Performance
 
-\* Sales \\\& Profit by Region clustered bar chart
-\* \*\*Profit by State filled map\*\* (red = loss, green = profitable)
-\* Total Sales by Region donut chart
-\* Region × Category profit matrix
+\\\* Sales \\\\\\\& Profit by Region clustered bar chart
+\\\* \\\*\\\*Profit by State filled map\\\*\\\* (red = loss, green = profitable)
+\\\* Total Sales by Region donut chart
+\\\* Region × Category profit matrix
+
+KEY INSIGHTS:
+
+\- Technology category generates the highest profit.
+
+\- Furniture shows lower profit margins despite strong sales.
+
+\- West region performs best in both sales and profitability.
+
+\- Several products consistently generate negative profit, indicating pricing inefficiencies.
+
+
 
 
 ## 🐍 Python Analysis
 
-Static visualisations were produced using \*\*Pandas and Matplotlib\*\* for reproducibility and GitHub presentation.
+Static visualisations were produced using \\\*\\\*Pandas and Matplotlib\\\*\\\* for reproducibility and GitHub presentation.
 
 Charts produced:
 
-\* Sales by Region (bar chart)
-\* Profit by Category (bar chart)
-\* Monthly Sales Trend (line chart)
+\\\* Sales by Region (bar chart)
+\\\* Profit by Category (bar chart)
+\\\* Monthly Sales Trend (line chart)
 
 
 
 
-## 🛠️ Tools \\\& Technologies
+## 🛠️ Tools \\\\\\\& Technologies
 
 |Tool|Purpose|
 |-|-|
@@ -206,13 +219,27 @@ Charts produced:
 
 
 
+
+## Business Recommendation:
+
+#### 
+
+#### \- Reduce discounts in Furniture category
+
+#### \- Re-evaluate pricing for loss-making products
+
+\- Focus on high-margin segments like Technology
+
+
 ## 👤 About
 
-\*\*Nazeer Pinjari\*\* — Data Analyst  
+\\\*\\\*Nazeer Pinjari\\\*\\\* — Data Analyst  
 MSc Data Science, Coventry University  
-Background in QA \\\& Data Validation and Data \\\& Analytics Engineering
+Background in QA \\\\\\\& Data Validation and Data \\\\\\\& Analytics Engineering
 
-\[LinkedIn](#) · \[GitHub](#)
+\\\[LinkedIn](#) · \\\[GitHub](#)
 
 ===
+
+---
 
