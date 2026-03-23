@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/nazeer/Desktop/BI_Portfolio/End-To-End_Portfolio/ClaudAI/🗂️ PROJECT 1 — Retail Sales Performance Analysis/superstore.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2491"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Superstore" custom_title="0" dock_id="1" table="4,10:mainSuperstore"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011800ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="Analysis">-- select count(*) as row_count
+-- from Superstore;
+
+#Q1  Revenue &amp; Profit by Region/Which region makes the most / least money?
+
+&quot;Insight: Central region shows low profitability despite strong revenue, indicating cost 
+		  or discount inefficiencies. West Region Leads&quot;
+
+SELECT 
+	Region, 
+	ROUND(sum(sales),2) as Total_Revenue,
+	ROUND(sum(profit),2) as Total_Profit,
+	ROUND((sum(Profit) / sum(sales)) * 100,2) as Total_profit_percentage
+FROM Superstore
+GROUP By Region
+ORDER BY Total_Revenue DESC;
+
+
+## Q2 — Revenue &amp; Profit by Category &amp; Sub-Category?
+&quot;Insight: Furniture Is a Volume Trap
+		  Furniture category generates high sales but suffers from negative margins, making it a 
+		  profitability risk.&quot;
+
+SELECT 
+	Category,
+	&quot;Sub-Category&quot;,
+	round(sum(sales),2) as Total_Revenue,
+	round(sum(profit),2) as Total_Profit,
+	round((sum(profit) / sum(sales)) * 100, 2) as Total_Margin_percentage
+FROM Superstore
+GROUP BY Category, &quot;Sub-Category&quot;
+
+ORDER BY Total_Margin_percentage;
+-- ORDER BY  Category, &quot;Sub-Category&quot; DESC;
+	
+&quot;
+Key Numbers:
+
+Worst sub-category: Tables (-8.56%)
+Best margin: Labels (44.42%)
+Best absolute profit: Copiers ($55,618)
+Most dangerous high-revenue item: Machines (1.79% on $189K revenue)
+&quot;
+
+
+# Q3 — Top 10 Products by Revenue
+&quot;Insight: High revenue does not guarantee profitability, as some top-selling products generate 
+losses.&quot;
+
+SELECT 
+	&quot;Product Name&quot;,
+	Category,
+	&quot;Sub-Category&quot;,
+	round(sum(sales),2) AS Total_Revenue,
+	round(sum(profit),2) AS Total_profit,
+	round((sum(profit) / sum(sales) * 100), 2) AS Total_Margin_percentage,
+	count(DISTINCT &quot;Order ID&quot; ) AS Total_Orders
+FROM Superstore
+GROUP BY &quot;Product Name&quot;, Category, &quot;Sub-Category&quot;
+ORDER BY Total_Revenue DESC
+LIMIT 10;
+
+
+
+# Q4 — Loss-Making Products
+&quot;Insight: Certain products consistently generate negative profit, indicating pricing or cost issues.&quot;
+
+
+SELECT
+	&quot;Product Name&quot;,
+	Category,
+	&quot;Sub-Category&quot;,
+	ROUND(SUM(sales),2) AS Total_Revenue,
+	ROUND(SUM(Profit),2) AS Total_Profit,
+	ROUND((SUM(Profit)/SUM(sales))*100,2) AS Total_Revenue_Per,
+	COUNT(DISTINCT &quot;Order ID&quot;) AS Total_Orders
+FROM Superstore
+GROUP BY &quot;Product Name&quot;, Category, &quot;Sub-Category&quot;
+HAVING Total_Profit&lt;0
+ORDER BY Total_Profit ASC
+LIMIT 15;
+
+
+#Q5 Sales by region and segment
+&quot;Insight: Central region underperforms across all segments, confirming systemic profitability issues.&quot;
+
+
+SELECT 
+    Region,
+    Segment,
+    ROUND(SUM(Sales), 2) AS total_sales,
+    ROUND(SUM(Profit), 2) AS total_profit
+FROM superstore
+GROUP BY Region, Segment
+ORDER BY total_sales DESC; 
+
+
+# Q6 — Sales Trend by Year &amp; Month
+&quot;Insight: Sales show strong seasonality with Q4 peaks, while Q1 remains consistently weak.&quot;
+
+
+SELECT
+	SUBSTR(&quot;Order Date&quot;,-4) AS Order_Year,
+	SUBSTR(&quot;Order Date&quot;, 1, INSTR(&quot;Order Date&quot;, '/') - 1) AS order_month,
+	ROUND(SUM(Sales),2) 	 AS Total_Revenue,
+	ROUND(SUM(Profit),2)	 AS Total_Profit,
+	COUNT(DISTINCT &quot;Order ID&quot;) AS Total_Orders
+FROM Superstore
+WHERE INSTR(&quot;Order Date&quot;, '/') &gt; 0
+GROUP BY Order_Year, Order_Month
+HAVING order_month IS NOT NULL AND order_month != ''
+ORDER BY order_year ASC, CAST(order_month AS INTEGER) ASC;
+
+&quot;
+Q1 (Jan-Mar) --&gt; Weak / loss risk
+Q2 (Apr-Jun) --&gt; Recovery
+Q3 (Jul-Sep) --&gt; Strong spike in Sep
+Q4 (Oct-Dec) --&gt; Consistently strongest
+&quot;
+
+# Q7 — Profit Margin by Region &amp; Category
+&quot;Insight: Profitability varies significantly by region and category, highlighting uneven performance.&quot;
+
+SELECT 
+	Region,
+	Category,
+	ROUND(SUM(Sales),2) AS Total_Revenue,
+	ROUND(SUM(Profit),2) AS Total_Profit,
+	ROUND((SUM(Profit) / SUM(Sales) * 100),2) AS Total_Margin_Per,
+	COUNT(DISTINCT &quot;Order ID&quot;) AS Total_Orders
+FROM Superstore
+GROUP BY Region, Category
+ORDER BY Total_Margin_Per ASC;
+
+
+Q8 — Shipping Mode Impact on Profit
+
+&quot;Does offering faster shipping modes cost the business profitability — or do customers who pay for 
+premium shipping actually generate better margins?&quot;
+
+&quot;Insight: Standard shipping generates high revenue but lower margins compared to premium shipping modes.&quot;
+
+SELECT 
+	&quot;Ship Mode&quot;,
+	ROUND(SUM(Sales), 2) AS Total_sales,
+    ROUND(SUM(Profit), 2) AS Total_profit,
+	ROUND((SUM(Profit) / SUM(Sales) * 100),2) AS Profit_Margin_Per,
+	ROUND(SUM(sales) / COUNT(DISTINCT &quot;Order ID&quot;), 2) AS Avg_Order_Value
+FROM Superstore
+GROUP BY &quot;Ship Mode&quot;
+ORDER BY Profit_Margin_Per ;
+
+
+	
+# Q9 — Running Total Sales by Month (Window Function)
+&quot;Insight: Revenue growth accelerated significantly in 2017, indicating a business growth inflection point.&quot;
+	
+WITH monthly_sales AS (
+    SELECT
+        substr(&quot;Order Date&quot;, -4)                                    AS order_year,
+        CAST(substr(&quot;Order Date&quot;, 1, instr(&quot;Order Date&quot;, '/') - 1) 
+             AS INTEGER)                                            AS order_month,
+        ROUND(SUM(Sales), 2)                                        AS total_revenue
+    FROM superstore
+    WHERE instr(&quot;Order Date&quot;, '/') &gt; 0
+    GROUP BY order_year, order_month
+)
+SELECT
+    order_year,
+    order_month,
+    total_revenue,
+    ROUND(SUM(total_revenue) OVER (
+        PARTITION BY order_year
+        ORDER BY order_month
+    ), 2) AS running_total
+FROM monthly_sales
+ORDER BY order_year, order_month;
+
+
+
+# Q10 — Customer Ranking by Revenue using CTE + RANK()?
+&quot;Insight: High-revenue customers are not always profitable, emphasizing the need to focus on margin over volume.&quot;
+
+WITH customer_revenue AS (
+    SELECT
+        &quot;Customer Name&quot;,
+        Segment,
+        Region,
+        ROUND(SUM(Sales), 2)  AS total_revenue,
+        ROUND(SUM(Profit), 2) AS total_profit,
+        ROUND((SUM(Profit) / SUM(Sales)) * 100, 2) AS profit_margin_pct,
+        COUNT(DISTINCT &quot;Order ID&quot;) AS total_orders
+    FROM superstore
+    GROUP BY &quot;Customer Name&quot;, Segment, Region
+)
+SELECT
+    RANK() OVER (ORDER BY total_revenue DESC) AS revenue_rank,
+    &quot;Customer Name&quot;,
+    Segment,
+    Region,
+    total_revenue,
+    total_profit,
+    profit_margin_pct,
+    total_orders
+FROM customer_revenue
+ORDER BY revenue_rank
+LIMIT 15;
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
